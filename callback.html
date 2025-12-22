@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Logging you in...</title>
+</head>
+<body>
+  <h3>Logging you in...</h3>
+
+  <script>
+    // Implicit flow → token comes in HASH
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+
+    const idToken = params.get("id_token");
+
+    if (!idToken) {
+      document.body.innerHTML = "<h3>Login failed (no token)</h3>";
+      throw new Error("No token received");
+    }
+
+    // 🔐 Remove token from URL immediately
+    window.history.replaceState({}, document.title, window.location.pathname);
+
+    // Decode JWT (frontend only)
+    const payload = JSON.parse(atob(idToken.split(".")[1]));
+    const groups = payload["cognito:groups"] || [];
+
+    // 🔐 Store token only for this session
+    sessionStorage.setItem("id_token", idToken);
+
+    // Role-based redirect
+    if (groups.includes("Admin")) {
+      window.location.href = "http://ec2-65-0-56-255.ap-south-1.compute.amazonaws.com/lms/#/admin/dashboard";
+    } else {
+      window.location.href = "http://ec2-65-0-56-255.ap-south-1.compute.amazonaws.com/lms/#/user/dashboard";
+    }
+  </script>
+</body>
+</html>
