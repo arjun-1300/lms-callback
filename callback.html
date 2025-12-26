@@ -4,38 +4,40 @@
   <title>Logging you in...</title>
 </head>
 <body>
-  <h2>Logging you in...</h2>
+  <h3>Logging you in...</h3>
 
   <script>
-    const hash = window.location.hash;
-    const params = new URLSearchParams(hash.substring(1));
-    const idToken = params.get("id_token");
+    const params = new URLSearchParams(window.location.hash.substring(1));
 
-    if (!idToken) {
-      document.body.innerHTML = "<h3>Login failed</h3>";
+    const idToken = params.get("id_token");
+    const accessToken = params.get("access_token");
+
+    if (!idToken || !accessToken) {
+      document.body.innerHTML = "<h3>Login failed (no token)</h3>";
       throw new Error("No token received");
     }
 
-    // Decode JWT
-    const payload = JSON.parse(atob(idToken.split('.')[1]));
-    console.log("Token payload:", payload);
+    // Remove tokens from URL
+    window.history.replaceState({}, document.title, window.location.pathname);
 
-    const groups = payload["cognito:groups"];
+    // Decode ACCESS token (groups live here)
+    const payload = JSON.parse(atob(accessToken.split(".")[1]));
+    console.log("Access token payload:", payload);
 
-    // Save token
-    localStorage.setItem("id_token", idToken);
+    const groups = payload["cognito:groups"] || [];
 
-    // ✅ MATCH EXACT GROUP NAMES
-    if (groups && groups.includes("Admin")) {
-      window.location.href = "http://ec2-13-205-40-14.ap-south-1.compute.amazonaws.com/lms/#/admin/dashboard";
-    } else if (groups && groups.includes("User")) {
-      window.location.href = "http://ec2-13-205-40-14.ap-south-1.compute.amazonaws.com/lms/#/user/dashboard";
+    // Store tokens
+    sessionStorage.setItem("id_token", idToken);
+    sessionStorage.setItem("access_token", accessToken);
+
+    // ✅ Redirect ONLY to EC2 React routes
+    if (groups.includes("Admin")) {
+      window.location.href =
+        "http://ec2-13-205-40-14.ap-south-1.compute.amazonaws.com/lms/#/admin/dashboard";
     } else {
-      // fallback
-      window.location.href = "http://ec2-13-205-40-14.ap-south-1.compute.amazonaws.com/lms/#/user/dashboard";
+      window.location.href =
+        "http://ec2-13-205-40-14.ap-south-1.compute.amazonaws.com/lms/#/user/dashboard";
     }
   </script>
 </body>
 </html>
-
-
