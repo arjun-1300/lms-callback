@@ -27,14 +27,15 @@
 
     // ✅ MATCH EXACT GROUP NAMES
     if (groups && groups.includes("Admin")) {
-      window.location.href = "admin-dashboard.html";
+      window.location.href = "http://ec2-13-205-40-14.ap-south-1.compute.amazonaws.com/lms/#/admin/dashboard";
     } else if (groups && groups.includes("User")) {
-      window.location.href = "student-dashboard.html";
+      window.location.href = "http://ec2-13-205-40-14.ap-south-1.compute.amazonaws.com/lms/#/user/dashboard";
     } else {
       // fallback
-      window.location.href = "user-dashboard.html";
+      window.location.href = "http://ec2-13-205-40-14.ap-south-1.compute.amazonaws.com/lms/#/user/dashboard";
     }
   </script>
 </body>
 </html>
+
 
