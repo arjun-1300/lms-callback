@@ -26,9 +26,9 @@
     localStorage.setItem("id_token", idToken);
 
     // ✅ MATCH EXACT GROUP NAMES
-    if (groups && groups.includes("Admin_auth")) {
+    if (groups && groups.includes("Admin")) {
       window.location.href = "admin-dashboard.html";
-    } else if (groups && groups.includes("Students_auth")) {
+    } else if (groups && groups.includes("User")) {
       window.location.href = "student-dashboard.html";
     } else {
       // fallback
@@ -37,3 +37,4 @@
   </script>
 </body>
 </html>
+
