@@ -7,7 +7,6 @@
   <h3>Logging you in...</h3>
 
   <script>
-    // Tokens come in URL hash
     const hash = window.location.hash.substring(1);
     const params = new URLSearchParams(hash);
 
@@ -19,17 +18,16 @@
       throw new Error("No token received");
     }
 
-    // 🔐 Remove tokens from URL immediately
+    // Remove token from URL
     window.history.replaceState({}, document.title, window.location.pathname);
 
-    // Decode ACCESS TOKEN (this contains groups)
+    // Decode ACCESS TOKEN (groups live here)
     const payload = JSON.parse(atob(accessToken.split(".")[1]));
     const groups = payload["cognito:groups"] || [];
 
-    // Store ID token for session use
     sessionStorage.setItem("id_token", idToken);
+    sessionStorage.setItem("access_token", accessToken);
 
-    // Role-based redirect
     if (groups.includes("Admin")) {
       window.location.href =
         "http://ec2-13-205-40-14.ap-south-1.compute.amazonaws.com/lms/#/admin/dashboard";
